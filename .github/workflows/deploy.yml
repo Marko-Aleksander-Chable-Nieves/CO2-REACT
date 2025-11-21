@@ -1,27 +1,20 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy Vite app to GitHub Pages
 
 on:
-  # Se ejecuta cuando haces push a main
   push:
-    branches: ['main']
-
-  # También puedes lanzarlo manualmente desde la pestaña Actions
+    branches: [main]
   workflow_dispatch:
 
-# Permisos del token para poder desplegar en Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Solo un deploy a la vez
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
-  # Un solo job de deploy
   deploy:
     environment:
       name: github-pages
@@ -29,28 +22,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v6
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-          cache: 'npm'
+          node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        working-directory: Medioambiente      # 👈 aquí
+        run: npm install
 
       - name: Build
+        working-directory: Medioambiente      # 👈 y aquí
         run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          # Carpeta de salida de Vite
-          path: './dist'
+          path: Medioambiente/dist            # 👈 build sale aquí
 
       - name: Deploy to GitHub Pages
         id: deployment
