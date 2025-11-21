@@ -1,0 +1,57 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Se ejecuta cuando haces push a main
+  push:
+    branches: ['main']
+
+  # También puedes lanzarlo manualmente desde la pestaña Actions
+  workflow_dispatch:
+
+# Permisos del token para poder desplegar en Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Solo un deploy a la vez
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  # Un solo job de deploy
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          # Carpeta de salida de Vite
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
