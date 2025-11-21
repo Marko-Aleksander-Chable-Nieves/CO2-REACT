@@ -190,7 +190,7 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/annual-co2-emissions-per-country.csv", {
+        const res = await fetch("annual-co2-emissions-per-country.csv", {
           cache: "no-store",
         });
         if (!res.ok)
